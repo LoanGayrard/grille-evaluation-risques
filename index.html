@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grille Oral Risques</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f6fa; --panel:#ffffff; --panel2:#f0f2f7; --ink:#14161f; --muted:#5d6475; --line:#e2e5ee;
+  --accent:#3b5bfd; --accent-ink:#ffffff; --accent-soft:#e8ecff;
+  --ok:#14915a; --ok-soft:#e3f6ec; --warn:#c77700; --warn-soft:#fff3dd; --bad:#d23c3c; --bad-soft:#fde8e8;
+  --fond:#3b5bfd; --oral:#9b3bfd;
+  --shadow:0 1px 2px rgba(16,24,40,.05),0 4px 16px rgba(16,24,40,.06);
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1017; --panel:#161922; --panel2:#1d212d; --ink:#eef0f6; --muted:#9aa1b3; --line:#2a2f3d;
+    --accent:#6d86ff; --accent-ink:#0b0d14; --accent-soft:#1f2747;
+    --ok:#3ccf8a; --ok-soft:#14301f; --warn:#f2a93b; --warn-soft:#332611; --bad:#ff6b6b; --bad-soft:#3a1719;
+    --fond:#6d86ff; --oral:#b977ff; --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1017; --panel:#161922; --panel2:#1d212d; --ink:#eef0f6; --muted:#9aa1b3; --line:#2a2f3d;
+  --accent:#6d86ff; --accent-ink:#0b0d14; --accent-soft:#1f2747;
+  --ok:#3ccf8a; --ok-soft:#14301f; --warn:#f2a93b; --warn-soft:#332611; --bad:#ff6b6b; --bad-soft:#3a1719;
+  --fond:#6d86ff; --oral:#b977ff; --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 16px}
+.topbar{display:flex;align-items:center;gap:14px;height:62px}
+.brand{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.brand b{font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tabs{display:flex;gap:4px;background:var(--panel2);padding:4px;border-radius:12px;margin-left:auto}
+.tab{border:0;background:transparent;padding:7px 14px;border-radius:9px;cursor:pointer;font-weight:600;color:var(--muted);white-space:nowrap}
+.tab.on{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.iconbtn{border:1px solid var(--line);background:var(--panel);border-radius:10px;height:36px;min-width:36px;padding:0 10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;font-size:13px}
+.iconbtn:hover{border-color:var(--accent)}
+.prep{font-weight:700}
+.prep.run{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+main{padding:22px 0 80px}
+.view{display:none}.view.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.pad{padding:18px}
+h2{font-size:20px;margin:0 0 4px;letter-spacing:-.01em}
+h3{font-size:15px;margin:0}
+.sub{color:var(--muted);font-size:13px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.field label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+input[type=text],input[type=number],textarea,select{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 11px;outline:none;width:100%}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+textarea{resize:vertical;min-height:70px}
+.btn{border:0;border-radius:10px;padding:9px 14px;font-weight:600;cursor:pointer;background:var(--panel2);border:1px solid var(--line);display:inline-flex;gap:6px;align-items:center}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.danger{color:var(--bad)}
+.btn.sm{padding:5px 10px;font-size:13px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--panel2);color:var(--muted)}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+
+/* group switcher */
+.gswitch{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px}
+.gbtn{flex:0 0 auto;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:10px 14px;cursor:pointer;text-align:left;min-width:150px}
+.gbtn.on{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.gbtn .n{font-weight:700}
+.gbtn .s{font-size:12px;color:var(--muted)}
+.evalgrid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}
+@media (max-width:980px){.evalgrid{grid-template-columns:1fr}.side{position:static!important}}
+.side{position:sticky;top:78px;display:flex;flex-direction:column;gap:14px}
+
+/* timer */
+.timer{padding:16px}
+.clock{font-size:56px;font-weight:700;text-align:center;letter-spacing:-.02em;line-height:1;margin:6px 0 4px}
+.clock.warn{color:var(--warn)}.clock.bad{color:var(--bad)}
+.phase{display:flex;gap:4px;background:var(--panel2);padding:4px;border-radius:10px}
+.phase button{flex:1;border:0;background:transparent;padding:6px;border-radius:7px;font-weight:600;font-size:13px;cursor:pointer;color:var(--muted)}
+.phase button.on{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.bar{height:6px;border-radius:6px;background:var(--panel2);overflow:hidden;margin:8px 0 12px}
+.bar i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.ctrl{display:flex;gap:8px}
+.ctrl .btn{flex:1;justify-content:center}
+.speakers{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.spk{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:7px 10px;cursor:pointer;background:var(--panel);position:relative;overflow:hidden;text-align:left}
+.spk .fill{position:absolute;left:0;top:0;bottom:0;background:var(--accent-soft);z-index:0;transition:width .3s}
+.spk>*:not(.fill){position:relative;z-index:1}
+.spk.on{border-color:var(--accent)}
+.spk.on .dot{background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.spk .dot{width:10px;height:10px;border-radius:50%;background:var(--line);margin-left:4px}
+.spk kbd{font-size:11px;color:var(--muted)}
+kbd{font-family:"JetBrains Mono",monospace;font-size:11px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:var(--panel2)}
+.hint{font-size:12px;color:var(--muted);margin-top:10px}
+
+/* score summary */
+.score{padding:16px}
+.big{font-size:40px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.big small{font-size:18px;color:var(--muted);font-weight:600}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.split div{background:var(--panel2);border-radius:10px;padding:8px 10px}
+.split b{display:block;font-size:18px}
+.split span{font-size:12px;color:var(--muted)}
+
+/* criteria */
+.sect{margin:4px 0 10px;display:flex;align-items:center;gap:10px}
+.sect .tag{width:10px;height:10px;border-radius:3px}
+.crit{padding:14px 16px;margin-bottom:10px}
+.crit-h{display:flex;gap:10px;align-items:flex-start}
+.crit-h .t{flex:1;min-width:0}
+.crit-h .pts{font-weight:700;white-space:nowrap}
+.crit-h .pts small{color:var(--muted);font-weight:500}
+.levels{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+@media (max-width:560px){.levels{grid-template-columns:repeat(2,1fr)}}
+.lvl{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:7px 8px;cursor:pointer;text-align:left;font-size:12.5px;line-height:1.3}
+.lvl b{display:block;font-size:13px}
+.lvl:hover{border-color:var(--accent)}
+.lvl.on[data-l="0"]{background:var(--bad-soft);border-color:var(--bad)}
+.lvl.on[data-l="1"]{background:var(--warn-soft);border-color:var(--warn)}
+.lvl.on[data-l="2"]{background:var(--accent-soft);border-color:var(--accent)}
+.lvl.on[data-l="3"]{background:var(--ok-soft);border-color:var(--ok)}
+details.chk{margin-top:8px}
+details.chk summary{cursor:pointer;font-size:13px;color:var(--muted);font-weight:600;list-style:none}
+details.chk summary::before{content:"▸ ";}
+details.chk[open] summary::before{content:"▾ ";}
+.chk label{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;padding:3px 0;cursor:pointer}
+.chk input{margin-top:3px;accent-color:var(--accent)}
+.suggest{margin-top:8px;font-size:13px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--panel2);padding:6px 10px;border-radius:9px}
+.adj{display:flex;align-items:center;gap:8px}
+.adj input{width:80px}
+
+/* results */
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700}
+.tablewrap{overflow-x:auto}
+.rank{display:inline-flex;width:26px;height:26px;border-radius:8px;align-items:center;justify-content:center;font-weight:800;background:var(--panel2)}
+.rank.r1{background:#f5c84222;color:#c99a00}
+.bars{display:flex;flex-direction:column;gap:10px}
+.barrow{display:grid;grid-template-columns:140px 1fr 70px;gap:10px;align-items:center}
+.barrow .track{height:26px;background:var(--panel2);border-radius:8px;overflow:hidden;display:flex}
+.barrow .track i{display:block;height:100%}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:10px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+
+/* sync */
+.sync{font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px;background:var(--panel2);color:var(--muted);white-space:nowrap;border:1px solid var(--line);cursor:pointer}
+.sync.on{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.sync.err{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.colleague{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
+.colleague:last-child{border-bottom:0}
+.share{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--accent-soft);border-radius:12px;padding:12px 14px;margin-bottom:16px}
+.share code{background:var(--panel);padding:4px 8px;border-radius:7px;font-size:12.5px;word-break:break-all;flex:1;min-width:200px}
+details.gdet{border-top:1px solid var(--line);padding:10px 0}
+details.gdet summary{cursor:pointer;font-weight:700}
+.cm{font-size:13.5px;margin:8px 0 0 0;padding:8px 10px;background:var(--panel2);border-radius:9px}
+.cm b{display:block;font-size:12px;color:var(--muted)}
+
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;transition:transform .25s;z-index:200}
+.toast.on{transform:translateX(-50%) translateY(0)}
+.order{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.order span{background:var(--accent-soft);color:var(--accent);font-weight:700;padding:4px 10px;border-radius:8px;font-size:13px}
+.members{display:flex;flex-direction:column;gap:6px}
+.members .m{display:flex;gap:6px}
+.empty{color:var(--muted);text-align:center;padding:30px}
+
+#print{display:none}
+@media print{
+  body{background:#fff;color:#000}
+  header.top,main,#fs,.toast{display:none!important}
+  #print{display:block;font-size:12px}
+  #print .sheet{page-break-after:always;padding:8mm}
+  #print table{font-size:11px}
+  #print th,#print td{border:1px solid #bbb;padding:4px 6px;white-space:normal;text-align:left}
+  #print h1{font-size:18px;margin:0 0 4px}
+}
+@media (max-width:720px){
+  .topbar{height:auto;flex-wrap:wrap;padding:10px 0}
+  .tabs{margin-left:0;width:100%;order:3}
+  .tab{flex:1;padding:7px 6px}
+  .clock{font-size:46px}
+  .barrow{grid-template-columns:90px 1fr 56px}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap topbar">
+    <div class="brand">
+      <b>Grille d'évaluation · Oral</b>
+      <span id="sessionLabel">CESI · Sauvez le lancement</span>
+    </div>
+    <nav class="tabs">
+      <button class="tab on" data-v="setup">Groupes</button>
+      <button class="tab" data-v="eval">Évaluation</button>
+      <button class="tab" data-v="results">Synthèse</button>
+      <button class="tab" data-v="grid">Grille</button>
+    </nav>
+    <button class="sync" id="syncBtn" title="Partage des notes entre évaluateurs">Local</button>
+    <button class="iconbtn" id="themeBtn" title="Thème clair / sombre">◐</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- SETUP -->
+  <section class="view on" id="v-setup">
+    <div id="shareBox"></div>
+    <div class="card pad" style="margin-bottom:16px">
+      <div class="row" style="align-items:flex-end">
+        <div class="field" style="flex:1;min-width:200px;margin:0">
+          <label>Votre nom (évaluateur)</label>
+          <input type="text" id="evaluator" placeholder="Ex. : GAYRARD Loan" list="juryList"><datalist id="juryList"><option value="GAYRARD Loan"><option value="LAUNAY Simon"></datalist>
+        </div>
+        <div class="field" style="flex:2;min-width:240px;margin:0">
+          <label>Session</label>
+          <input type="text" id="sessionName">
+        </div>
+        <div class="field" style="width:140px;margin:0">
+          <label>Durée oral (min)</label>
+          <input type="number" id="dur" min="1" max="60" step="0.5">
+        </div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn" id="addGroup">＋ Ajouter un groupe</button>
+        <button class="btn" id="shuffle">🎲 Tirer l'ordre de passage</button>
+        <span class="spacer"></span>
+        <button class="btn danger" id="resetAll">Effacer mes notes</button>
+      </div>
+      <div id="orderOut"></div>
+    </div>
+    <div class="grid2" id="groupsSetup"></div>
+  </section>
+
+  <!-- EVAL -->
+  <section class="view" id="v-eval">
+    <div class="gswitch" id="gswitch"></div>
+    <div class="evalgrid">
+      <div id="critList"></div>
+      <aside class="side">
+        <div class="card timer">
+          <div class="row"><h3 id="tGroup">—</h3><span class="spacer"></span><span class="sub" id="target"></span></div>
+          <div class="clock mono" id="clock">00:00</div>
+          <div class="bar"><i id="clockBar" style="width:0"></i></div>
+          <div class="ctrl">
+            <button class="btn primary" id="startBtn">▶ Démarrer</button>
+            <button class="btn" id="resetBtn" title="Remettre à zéro">↺ Zéro</button>
+          </div>
+        </div>
+        <div class="card score">
+          <div class="row"><span class="sub">Ma note</span><span class="spacer"></span><span class="pill" id="completion"></span></div>
+          <div class="big mono" id="total">—<small>/20</small></div>
+          <div class="split">
+            <div><b class="mono" id="fondPts">—</b><span id="fondLbl">Livrables /14</span></div>
+            <div><b class="mono" id="oralPts">—</b><span id="oralLbl">Oral /6</span></div>
+          </div>
+          <div class="adj" style="margin-top:12px">
+            <span class="sub">Bonus / malus</span><span class="spacer"></span>
+            <input type="number" id="adjust" step="0.5" min="-3" max="3">
+          </div>
+        </div>
+        <div class="card pad" id="colleagues"></div>
+        <div class="card pad">
+          <div class="field"><label>Points forts</label><textarea id="cPlus" placeholder="Ce qui a bien fonctionné…"></textarea></div>
+          <div class="field"><label>Axes d'amélioration</label><textarea id="cMoins" placeholder="Ce qui reste à travailler…"></textarea></div>
+          <div class="field" style="margin:0"><label>Notes</label><textarea id="cNotes"></textarea></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="view" id="v-results">
+    <div class="card pad" style="margin-bottom:16px">
+      <div class="row">
+        <div><h2>Synthèse</h2><div class="sub" id="resSub"></div></div>
+        <span class="spacer"></span>
+        <button class="btn" id="exportCsv">⬇ CSV</button>
+        <button class="btn primary" id="printBtn">🖨 Fiches PDF</button>
+      </div>
+    </div>
+    <div class="card pad" style="margin-bottom:16px">
+      <h3 style="margin-bottom:12px">Classement (moyenne des évaluateurs)</h3>
+      <div class="bars" id="bars"></div>
+      <div class="legend"><span style="--c:var(--fond)">Livrables (/14)</span><span style="--c:var(--oral)">Oral (/6)</span></div>
+    </div>
+    <div class="card pad" style="margin-bottom:16px">
+      <h3 style="margin-bottom:8px">Notes par évaluateur</h3>
+      <div class="tablewrap"><table id="evTable"></table></div>
+    </div>
+    <div class="card pad" style="margin-bottom:16px">
+      <h3 style="margin-bottom:8px">Moyenne par critère</h3>
+      <div class="tablewrap"><table id="resTable"></table></div>
+    </div>
+    <div class="card pad">
+      <h3>Commentaires de tous les évaluateurs</h3>
+      <div id="allComments"></div>
+    </div>
+  </section>
+
+  <!-- GRID REFERENCE -->
+  <section class="view" id="v-grid">
+    <div class="card pad" style="margin-bottom:16px">
+      <h2>Grille de référence</h2>
+      <div class="sub">Workshop · Sauvez le lancement — Analyse et gestion des risques (mise en service d'une nouvelle ligne de production). Barème sur 20 : livrables 14 pts, oral 6 pts. Chaque critère est noté sur 4 niveaux (0, ⅓, ⅔ ou 100 % des points).</div>
+      <div class="split" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+        <div><b>Données du cas</b><span>Budget 1,8 M€ (1,42 M€ engagés, réserve aléas 180 k€ dont 15 k€ mobilisables) · Démarrage contractuel dans 10 semaines · Cadence 290 / 400 pièces/j · Non-conformité 6 % (objectif ≤ 2 %)</span></div>
+        <div><b>Signaux d'alerte</b><span>3 arrêts machine en 5 jours · Pièce de rechange critique à 3 semaines · Seul technicien habilité indisponible · Fournisseur : retard possible de 10 j · Sous-traitant non confirmé · Essais de validation incomplets</span></div>
+        <div><b>Livrables attendus</b><span>1. Identification (Ishikawa, TOHE, fiche) · 2. Évaluation (matrice de criticité, priorisation) · 3. Traitement (plan de remédiation, risques résiduels) · 4. Contrôle (responsables, KRI, reporting) · 5. Décision de lancement motivée</span></div>
+        <div><b>Format</b><span>Présentation de 10 min par équipe · Processus CESI en 4 étapes (consigne 1) · Analyse Qualité-Coût-Délai et compromis (consigne 2)</span></div>
+      </div>
+    </div>
+    <div id="gridRef"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+<div id="print"></div>
+
+<script>
+(() => {
+'use strict';
+const LEVELS = [
+  {l:0, name:'Insuffisant', f:0},
+  {l:1, name:'Partiel', f:1/3},
+  {l:2, name:'Satisfaisant', f:2/3},
+  {l:3, name:'Excellent', f:1},
+];
+const CRITERIA = [
+  {id:'identif', cat:'fond', title:'1. Identifier les risques', weight:2.5,
+   desc:'Inventaire structuré : Ishikawa (5M/8M), catégorisation TOHE, internes / externes, fiche de caractérisation.',
+   lv:['Absent ou simple liste de quelques risques','Inventaire partiel, outils peu ou mal utilisés','Ishikawa + TOHE + fiche présents et cohérents','Inventaire exhaustif, structuré, couvre tous les signaux du cas'],
+   checks:["Diagramme d'Ishikawa (5M ou 8M) construit",
+     'Catégorisation TOHE : technique, organisationnel, humain, économique',
+     'Distinction risques internes / externes',
+     'Fiche de caractérisation : catégorie, nature, description, phase, cause, conséquence',
+     'Signaux du cas repris : arrêts machine, pièce critique à 3 sem., technicien unique, fournisseur +10 j, sous-traitant, essais incomplets, 6 % NC, cadence 290/400']},
+  {id:'evaluation', cat:'fond', title:'2. Évaluer et hiérarchiser', weight:2.5,
+   desc:"Matrice de criticité construite par l'équipe, cotations justifiées, risques prioritaires classés.",
+   lv:['Pas de cotation','Cotation arbitraire ou matrice incomplète','Échelles définies, matrice et classement cohérents','Cotations justifiées et chiffrées par les données du cas'],
+   checks:['Échelles de gravité et de probabilité définies',
+     'Criticité = gravité × probabilité appliquée',
+     'Impacts évalués sur la qualité, le coût et le délai',
+     'Matrice de criticité lisible + classement des risques prioritaires',
+     'Hypothèses et cotations justifiées']},
+  {id:'traitement', cat:'fond', title:'3. Traiter les risques', weight:2.5,
+   desc:'Plan de remédiation pour les risques non acceptables, avec criticité résiduelle.',
+   lv:['Aucune action ou actions vagues','Quelques actions, sans moyens ni échéances','Plan de remédiation complet pour les risques majeurs','Plan réaliste, chiffré dans le budget, criticité résiduelle réévaluée'],
+   checks:['Mode de traitement choisi et justifié (évitement, réduction, acceptation, transfert)',
+     'Actions + responsables',
+     'Ressources et coûts estimés (enveloppe de 15 000 € respectée)',
+     'Échéances et priorités compatibles avec les 10 semaines',
+     'Réévaluation de la criticité résiduelle après action']},
+  {id:'controle', cat:'fond', title:'4. Contrôler et communiquer', weight:2,
+   desc:'Dispositif de pilotage construit à partir du schéma CESI.',
+   lv:['Absent','Quelques éléments isolés','Responsables, KRI et reporting définis','Dispositif complet avec boucles de retour, KRI mesurables'],
+   checks:['Un responsable par risque',
+     'KRI (Key Risk Indicators) définis et mesurables',
+     'Fréquence du reporting précisée',
+     'Boucles de retour / mises à jour prévues']},
+  {id:'qcd', cat:'fond', title:'5. Analyse Qualité · Coût · Délai', weight:1.5,
+   desc:'Conséquences des risques sur le triangle QCD, compromis identifiés et justifiés (consigne 2).',
+   lv:['Absente','Évoquée sans chiffres','Impacts QCD analysés, compromis identifiés','Compromis argumentés à partir des données, hypothèses explicitées'],
+   checks:['Qualité : 6 % NC vs objectif ≤ 2 %, essais de validation',
+     'Coût : budget 1,8 M€, 1,42 M€ engagés, réserve 180 k€, 15 k€ mobilisables',
+     "Délai : 10 semaines, impact d'un éventuel report, cadence 290 vs 400 pièces/j",
+     'Compromis identifiés et justifiés',
+     'Hypothèses complémentaires explicitées']},
+  {id:'decision', cat:'fond', title:'6. Décision de lancement motivée', weight:1.5,
+   desc:'Réponse argumentée : faut-il maintenir le lancement prévu ?',
+   lv:['Pas de décision','Décision non justifiée',"Décision claire, appuyée sur l'analyse",'Décision tranchée, conditions / plan B, cohérente avec les données'],
+   checks:['Position claire (maintien, report, lancement conditionnel…)',
+     'Justifiée par les données du cas et la criticité',
+     'Conditions de lancement ou plan B précisés']},
+  {id:'outils', cat:'fond', title:'Mobilisation des outils du cours', weight:1.5,
+   desc:'Outils du management des risques construits et exploités, pas seulement affichés.',
+   lv:['Aucun outil','Un ou deux outils, peu exploités','Plusieurs outils pertinents','Nombreux outils, bien exploités'],
+   checks:['Processus CESI en 4 étapes suivi',"Outils construits par l'équipe (Ishikawa, TOHE, matrice, plan d'actions, KRI…)",'Outils exploités, pas seulement affichés']},
+  {id:'discours', cat:'oral', title:'Clarté & structure du discours', weight:1.5,
+   desc:'Fil conducteur, vocabulaire maîtrisé, introduction et conclusion.',
+   lv:['Confus','Compréhensible mais décousu','Clair et structuré','Fluide, convaincant, vocabulaire précis'],
+   checks:['Introduction et conclusion','Fil conducteur logique','Vocabulaire du management des risques maîtrisé']},
+  {id:'support', cat:'oral', title:'Qualité du support PPT', weight:1.5,
+   desc:'Lisibilité et qualité visuelle des slides.',
+   lv:['Illisible ou absent','Chargé, peu lisible','Lisible et soigné','Très clair, visuels percutants'],
+   checks:['Schémas lisibles depuis la salle','Peu de texte, visuels pertinents','Pas de fautes']},
+  {id:'temps', cat:'oral', title:'Respect du temps (10 min)', weight:1, auto:'time',
+   desc:'Durée de présentation respectée.',
+   lv:['Écart > 2 min','Écart ≤ 2 min','Écart ≤ 1 min','Dans le temps (± 30 s)'],
+   checks:['Durée respectée']},
+  {id:'equipe', cat:'oral', title:'Prise de parole de l\'équipe', weight:1,
+   desc:'Tous les membres s\'expriment.',
+   lv:['Un seul orateur','Parole déséquilibrée','Tous s\'expriment','Répartition équilibrée, transitions fluides'],
+   checks:["Tous les membres s'expriment",'Transitions fluides']},
+  {id:'questions', cat:'oral', title:'Réponses aux questions', weight:1,
+   desc:'Capacité à justifier ses choix.',
+   lv:['Pas de réponse','Réponses vagues','Réponses pertinentes','Réponses précises et argumentées'],
+   checks:['Réponses précises','Choix justifiés']},
+];
+const MAX_FOND = CRITERIA.filter(c=>c.cat==='fond').reduce((a,c)=>a+c.weight,0);
+const MAX_ORAL = CRITERIA.filter(c=>c.cat==='oral').reduce((a,c)=>a+c.weight,0);
+const KEY = 'grille-risques-v1';
+
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = (n=8) => { const a='abcdefghijkmnpqrstuvwxyz23456789'; let s=''; const r=crypto.getRandomValues(new Uint8Array(n)); r.forEach(x=>s+=a[x%a.length]); return s; };
+const fmt = sec => { const s=Math.max(0,Math.round(sec)); return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); };
+const num = n => (Math.round(n*100)/100).toLocaleString('fr-FR',{maximumFractionDigits:2});
+
+/* ---------- room (shared) ---------- */
+const ROOM = (location.hash.match(/salle=([a-z0-9]{8,40})/i)||[])[1] || null;
+const STORE = KEY + (ROOM ? ':'+ROOM : ':local');
+const TOPIC = ROOM ? 'cesi-grille-risques-'+ROOM : null;
+
+const TEAMS = [
+  ['DELPECH Romain','FINOTTO Guillaume','SIADOUX Valentin','TRONEL-PEYROZ Baptiste','VERSEPUECH Théo'],
+  ['CELLIER Hugo','COUTIES Baptiste','DEVILLARD Louis','MOLINA Adrien','SOBHI Achraf'],
+  ['BLANCHARD Jules','DEVALLE Robin','FRÉBAULT Tom','KALAM ALAMI Ines','TRAN Ilyass'],
+  ['BESSON Jules','CADARS Milan','CAVAGNE Théo','LADJAL Adam','RENAULT Paulin'],
+];
+function newGroup(i, preset){
+  return {id:preset?'eq'+(i+1):uid(6), name:'Équipe '+(i+1), members:preset?[...TEAMS[i]]:['','','','',''], scores:{}, checks:{}, comments:{plus:'',moins:'',notes:''}, adjust:0, time:0, ts:0};
+}
+function defaults(){
+  return {session:'Workshop · Sauvez le lancement (risques)', evaluator:'', eid:null, dur:10,
+    groups:[0,1,2,3].map(i=>newGroup(i,true)), cfgTs:0, current:0, order:null, theme:null, others:{}};
+}
+let S;
+try { S = JSON.parse(localStorage.getItem(STORE)) || defaults(); } catch(e){ S = defaults(); }
+S = Object.assign(defaults(), S);
+try { S.eid = S.eid || localStorage.getItem('grille-pm-eid') || uid(10); localStorage.setItem('grille-pm-eid', S.eid); } catch(e){ S.eid = S.eid || uid(10); }
+try { if(!S.evaluator) S.evaluator = localStorage.getItem('grille-pm-name') || ''; } catch(e){}
+let saveT;
+function save(){ clearTimeout(saveT); saveT = setTimeout(()=>{ try{ localStorage.setItem(STORE, JSON.stringify(S)); localStorage.setItem('grille-pm-name', S.evaluator||''); }catch(e){} }, 150); }
+
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove('on'),2200); }
+
+/* ---------- theme ---------- */
+function applyTheme(){ if(S.theme) document.documentElement.dataset.theme=S.theme; else delete document.documentElement.dataset.theme; }
+$('#themeBtn').onclick = () => { const dark = S.theme ? S.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches; S.theme = dark ? 'light' : 'dark'; applyTheme(); save(); };
+applyTheme();
+
+/* ---------- tabs ---------- */
+let view='setup';
+function show(v){
+  view=v;
+  $$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.v===v));
+  $$('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));
+  if(v==='eval') renderEval();
+  if(v==='results') renderResults();
+  if(v==='setup') renderSetup();
+  window.scrollTo({top:0});
+}
+$$('.tab').forEach(t=>t.onclick=()=>show(t.dataset.v));
+
+/* ---------- scoring ---------- */
+function critPts(g,c){ const l=g.scores?.[c.id]; return l==null?null:c.weight*LEVELS[l].f; }
+function totals(g){
+  let fond=0, oral=0, done=0;
+  CRITERIA.forEach(c=>{ const p=critPts(g,c); if(p!=null){ done++; if(c.cat==='fond') fond+=p; else oral+=p; } });
+  const adj = Number(g.adjust)||0;
+  return {fond, oral, adj, total:Math.max(0,Math.min(20,fond+oral+adj)), done, n:CRITERIA.length};
+}
+const members = g => g.members.map(m=>m.trim()).filter(Boolean);
+function suggestTime(g){ if(!g.time) return null; const d=Math.abs(g.time - S.dur*60); return d<=30?3:d<=60?2:d<=120?1:0; }
+const myName = () => S.evaluator.trim() || 'Évaluateur sans nom';
+/* all evaluations for a group: [{eid,name,me,g}] */
+function evalsFor(gid){
+  const mine = S.groups.find(x=>x.id===gid);
+  const list = mine ? [{eid:S.eid, name:myName(), me:true, g:mine}] : [];
+  Object.entries(S.others).forEach(([eid,o])=>{ const g=o.groups?.[gid]; if(g) list.push({eid, name:o.name||'?', me:false, g}); });
+  return list;
+}
+function avgFor(gid){
+  const ev = evalsFor(gid).filter(e=>totals(e.g).done>0);
+  if(!ev.length) return null;
+  const crit = {}; CRITERIA.forEach(c=>{ const v=ev.map(e=>critPts(e.g,c)).filter(x=>x!=null); crit[c.id]= v.length? v.reduce((a,b)=>a+b,0)/v.length : null; });
+  const ts = ev.map(e=>totals(e.g));
+  const mean = k => ts.reduce((a,t)=>a+t[k],0)/ts.length;
+  return {n:ev.length, total:mean('total'), fond:mean('fond'), oral:mean('oral'), crit, spread: ts.length>1? Math.max(...ts.map(t=>t.total))-Math.min(...ts.map(t=>t.total)) : 0};
+}
+
+/* ---------- setup view ---------- */
+function shareLink(){ return location.origin + location.pathname + '#salle=' + ROOM; }
+function renderShare(){
+  const box=$('#shareBox');
+  if(ROOM){
+    box.innerHTML = `<div class="share"><b>🔗 Salle partagée</b><span class="sub" style="flex-basis:100%">Tous les évaluateurs qui ouvrent ce lien voient les groupes et les notes de chacun en direct.</span>
+      <code>${esc(shareLink())}</code><button class="btn sm primary" id="copyLink">Copier le lien</button></div>`;
+    $('#copyLink').onclick=()=>{ navigator.clipboard?.writeText(shareLink()).then(()=>toast('Lien copié'),()=>prompt('Copiez ce lien :',shareLink())); };
+  } else {
+    box.innerHTML = `<div class="share"><b>Mode local</b><span class="sub" style="flex:1">Vos notes ne sont visibles que sur cet appareil. Créez une salle pour noter à plusieurs et voir les notes des collègues.</span>
+      <button class="btn sm primary" id="mkRoom">Créer une salle partagée</button></div>`;
+    $('#mkRoom').onclick=()=>{ const r=uid(14); try{ localStorage.setItem(KEY+':'+r, JSON.stringify(Object.assign({},S,{cfgTs:Date.now(), others:{}}))); }catch(e){} location.hash='salle='+r; location.reload(); };
+  }
+}
+function renderSetup(){
+  renderShare();
+  $('#sessionName').value=S.session; $('#evaluator').value=S.evaluator; $('#dur').value=S.dur;
+  $('#sessionLabel').textContent=S.session;
+  $('#groupsSetup').innerHTML = S.groups.map((g,i)=>`
+    <div class="card pad" data-g="${i}">
+      <div class="row" style="margin-bottom:8px"><span class="pill">#${i+1}</span><span class="spacer"></span>
+        ${S.groups.length>1?`<button class="btn sm danger" data-del="${i}">Supprimer</button>`:''}</div>
+      <div class="field"><label>Nom du groupe</label><input type="text" data-k="name" value="${esc(g.name)}"></div>
+      <div class="field" style="margin:0"><label>Membres</label>
+        <div class="members">${g.members.map((m,j)=>`<div class="m"><input type="text" data-m="${j}" placeholder="Étudiant ${j+1}" value="${esc(m)}">
+          <button class="btn sm" data-rm="${j}" title="Retirer">✕</button></div>`).join('')}</div>
+        <button class="btn sm" data-addm style="margin-top:6px">＋ Membre</button>
+      </div>
+    </div>`).join('');
+  renderOrder();
+}
+function renderOrder(){
+  $('#orderOut').innerHTML = S.order ? `<div class="sub" style="margin-top:12px">Ordre de passage</div><div class="order">${S.order.map((id,i)=>{const g=S.groups.find(x=>x.id===id);return g?`<span>${i+1}. ${esc(g.name)}</span>`:''}).join('')}</div>`:'';
+}
+function cfgChanged(){ S.cfgTs=Date.now(); save(); queueCfg(); }
+$('#groupsSetup').addEventListener('input',e=>{
+  const card=e.target.closest('[data-g]'); if(!card) return; const g=S.groups[card.dataset.g];
+  if(e.target.dataset.k==='name') g.name=e.target.value;
+  if(e.target.dataset.m!=null) g.members[e.target.dataset.m]=e.target.value;
+  cfgChanged(); renderOrder();
+});
+$('#groupsSetup').addEventListener('click',e=>{
+  const card=e.target.closest('[data-g]'); if(!card) return; const i=+card.dataset.g, g=S.groups[i];
+  if(e.target.dataset.del!=null){ if(confirm(`Supprimer « ${g.name} » pour tous les évaluateurs ?`)){ S.groups.splice(i,1); S.current=Math.min(S.current,S.groups.length-1); if(S.order) S.order=S.order.filter(id=>id!==g.id); cfgChanged(); renderSetup(); } }
+  if(e.target.dataset.rm!=null){ g.members.splice(+e.target.dataset.rm,1); if(!g.members.length) g.members.push(''); cfgChanged(); renderSetup(); }
+  if(e.target.hasAttribute('data-addm')){ g.members.push(''); cfgChanged(); renderSetup(); }
+});
+$('#sessionName').oninput=e=>{S.session=e.target.value; $('#sessionLabel').textContent=S.session; cfgChanged();};
+$('#evaluator').oninput=e=>{S.evaluator=e.target.value; save(); S.groups.forEach(g=>{ if(g.ts) queueEv(g.id); });};
+$('#dur').oninput=e=>{S.dur=Math.max(0.5,+e.target.value||10); cfgChanged();};
+$('#addGroup').onclick=()=>{S.groups.push(newGroup(S.groups.length,false)); cfgChanged(); renderSetup();};
+$('#shuffle').onclick=()=>{
+  const ids=S.groups.map(g=>g.id); for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]];}
+  S.order=ids; S.groups.sort((a,b)=>ids.indexOf(a.id)-ids.indexOf(b.id)); S.current=0; cfgChanged(); renderSetup(); toast('Ordre de passage tiré au sort');
+};
+$('#resetAll').onclick=()=>{ if(confirm('Effacer toutes VOS notes, commentaires et temps ? (les groupes et les notes des collègues sont conservés)')){ stopTimer();
+  S.groups.forEach(g=>{ g.scores={}; g.checks={}; g.comments={plus:'',moins:'',notes:''}; g.adjust=0; g.time=0; g.ts=Date.now(); queueEv(g.id); }); save(); renderSetup(); toast('Vos notes ont été effacées'); } };
+
+/* ---------- eval view ---------- */
+const G = () => S.groups[S.current] || S.groups[0];
+function touch(g){ g.ts=Date.now(); save(); queueEv(g.id); }
+function renderSwitch(){
+  $('#gswitch').innerHTML = S.groups.map((g,i)=>{ const t=totals(g);
+    return `<button class="gbtn ${i===S.current?'on':''}" data-i="${i}"><div class="n">${esc(g.name)}</div>
+      <div class="s">${t.done===t.n?`<b>${num(t.total)}</b>/20`:`${t.done}/${t.n} critères`} · ⏱ ${fmt(g.time)}</div></button>`; }).join('');
+}
+$('#gswitch').addEventListener('click',e=>{ const b=e.target.closest('[data-i]'); if(!b) return; stopTimer(); S.current=+b.dataset.i; save(); renderEval(); });
+
+function renderEval(){
+  if(!S.groups.length) return;
+  if(S.current>=S.groups.length) S.current=0;
+  renderSwitch();
+  const g=G();
+  let html='', lastCat='';
+  if(ROOM && !S.evaluator.trim()) html+=`<div class="card pad" style="margin-bottom:12px;background:var(--warn-soft);border-color:transparent">⚠️ Indiquez votre nom dans l'onglet <b>Groupes</b> pour que vos collègues sachent qui a noté.</div>`;
+  CRITERIA.forEach(c=>{
+    if(c.cat!==lastCat){ lastCat=c.cat;
+      html+=`<div class="sect"><span class="tag" style="background:var(--${c.cat})"></span><h3>${c.cat==='fond'?'Livrables attendus':'Qualité de l\'oral & de la présentation'}</h3><span class="sub">/${c.cat==='fond'?MAX_FOND:MAX_ORAL} pts</span></div>`; }
+    const sel=g.scores[c.id]; const ch=g.checks[c.id]||[]; const p=critPts(g,c);
+    const nChk=ch.filter(Boolean).length;
+    html+=`<div class="card crit" data-c="${c.id}">
+      <div class="crit-h"><div class="t"><h3>${c.title}</h3><div class="sub">${c.desc}</div></div>
+        <div class="pts mono">${p==null?'–':num(p)} <small>/ ${num(c.weight)}</small></div></div>
+      <div class="levels">${LEVELS.map(L=>`<button class="lvl ${sel===L.l?'on':''}" data-l="${L.l}"><b>${L.name}</b>${c.lv[L.l]}</button>`).join('')}</div>
+      ${suggestHTML(g,c)}
+      <details class="chk" ${nChk?'open':''}><summary>Attendus (${nChk}/${c.checks.length})</summary>
+        ${c.checks.map((t,i)=>`<label><input type="checkbox" data-k="${i}" ${ch[i]?'checked':''}> <span>${t}</span></label>`).join('')}
+      </details>
+    </div>`;
+  });
+  $('#critList').innerHTML=html;
+  $('#adjust').value=g.adjust||0;
+  $('#cPlus').value=g.comments.plus; $('#cMoins').value=g.comments.moins; $('#cNotes').value=g.comments.notes;
+  renderScore(); renderTimer(); renderColleagues();
+}
+function suggestHTML(g,c){
+  if(c.auto!=='time') return '';
+  const s=suggestTime(g);
+  const info = g.time?`Temps chronométré : <b class="mono">${fmt(g.time)}</b> pour ${num(S.dur)} min prévues`:'Utilisez le chrono pour obtenir une suggestion.';
+  return `<div class="suggest"><span>⏱ ${info}</span>${s!=null?`<span class="spacer"></span><button class="btn sm" data-apply="${s}">Appliquer « ${LEVELS[s].name} »</button>`:''}</div>`;
+}
+function renderScore(){
+  const g=G(), t=totals(g);
+  $('#total').innerHTML=`${t.done?num(t.total):'—'}<small>/20</small>`;
+  $('#fondPts').textContent=num(t.fond); $('#oralPts').textContent=num(t.oral); $('#fondLbl').textContent='Livrables /'+num(MAX_FOND); $('#oralLbl').textContent='Oral /'+num(MAX_ORAL);
+  const c=$('#completion'); c.textContent=`${t.done}/${t.n} critères`; c.className='pill '+(t.done===t.n?'ok':'warn');
+}
+function renderColleagues(){
+  const box=$('#colleagues'); if(!box || !S.groups.length) return;
+  const g=G(); const others=evalsFor(g.id).filter(e=>!e.me);
+  const avg=avgFor(g.id);
+  if(!ROOM){ box.innerHTML=`<h3>Notes des collègues</h3><div class="sub" style="margin-top:6px">Créez une salle partagée (onglet Groupes) pour voir les notes des autres évaluateurs.</div>`; return; }
+  box.innerHTML=`<div class="row"><h3>Notes des collègues</h3><span class="spacer"></span>${avg&&avg.n>1?`<span class="pill">Moyenne <b class="mono">&nbsp;${num(avg.total)}</b></span>`:''}</div>
+    ${others.length? others.map(e=>{const t=totals(e.g); return `<div class="colleague"><span>${esc(e.name)}</span><span class="mono"><b>${t.done?num(t.total):'—'}</b>/20 <span class="sub">${t.done}/${t.n}</span></span></div>`}).join('') : '<div class="sub" style="margin-top:6px">Aucun collègue n\'a encore noté ce groupe.</div>'}`;
+}
+$('#critList').addEventListener('click',e=>{
+  const card=e.target.closest('[data-c]'); if(!card) return; const g=G(); const id=card.dataset.c;
+  const lvl=e.target.closest('.lvl'); const ap=e.target.closest('[data-apply]');
+  if(lvl||ap){ const l=+(lvl?lvl.dataset.l:ap.dataset.apply); if(lvl && g.scores[id]===l) delete g.scores[id]; else g.scores[id]=l; touch(g); refreshCrit(id); renderScore(); renderSwitch(); renderColleagues(); }
+});
+$('#critList').addEventListener('change',e=>{
+  if(e.target.type!=='checkbox') return; const card=e.target.closest('[data-c]'); const g=G(); const id=card.dataset.c;
+  (g.checks[id] ||= [])[+e.target.dataset.k]=e.target.checked; save();
+  const c=CRITERIA.find(x=>x.id===id); card.querySelector('summary').textContent=`Attendus (${g.checks[id].filter(Boolean).length}/${c.checks.length})`;
+});
+function refreshCrit(id){
+  const card=$(`[data-c="${id}"]`); if(!card) return; const g=G(), c=CRITERIA.find(x=>x.id===id);
+  card.querySelectorAll('.lvl').forEach(b=>b.classList.toggle('on',+b.dataset.l===g.scores[id]));
+  const p=critPts(g,c); card.querySelector('.pts').innerHTML=`${p==null?'–':num(p)} <small>/ ${num(c.weight)}</small>`;
+  const old=card.querySelector('.suggest'); if(old){ const tmp=document.createElement('div'); tmp.innerHTML=suggestHTML(g,c); old.replaceWith(tmp.firstElementChild); }
+}
+$('#adjust').oninput=e=>{const g=G(); g.adjust=Math.max(-3,Math.min(3,+e.target.value||0)); touch(g); renderScore(); renderSwitch(); renderColleagues();};
+$('#cPlus').oninput=e=>{const g=G(); g.comments.plus=e.target.value; touch(g);};
+$('#cMoins').oninput=e=>{const g=G(); g.comments.moins=e.target.value; touch(g);};
+$('#cNotes').oninput=e=>{const g=G(); g.comments.notes=e.target.value; touch(g);};
+
+/* ---------- simple stopwatch ---------- */
+let running=false, lastTick=0, iv=null;
+function tick(){ const now=performance.now(); G().time += (now-lastTick)/1000; lastTick=now; renderTimer(); }
+function startTimer(){ if(running) return; running=true; lastTick=performance.now(); iv=setInterval(tick,250); renderTimer(); }
+function stopTimer(){ if(!running) return; tick(); running=false; clearInterval(iv); const g=G(); touch(g); renderTimer(); renderSwitch(); refreshCrit('temps'); }
+function renderTimer(){
+  if(!S.groups.length) return;
+  const g=G(), lim=S.dur*60, el=g.time;
+  const cls = el>lim?'bad':(el>lim-60?'warn':'');
+  const clock=$('#clock'); clock.textContent=fmt(el); clock.className='clock mono '+cls;
+  $('#target').textContent=`objectif ${fmt(lim)}`;
+  $('#clockBar').style.width=Math.min(100,el/lim*100)+'%'; $('#clockBar').style.background= cls==='bad'?'var(--bad)':cls==='warn'?'var(--warn)':'var(--accent)';
+  $('#startBtn').innerHTML = running?'❚❚ Stop':(el>0?'▶ Reprendre':'▶ Démarrer');
+  $('#tGroup').textContent=g.name;
+}
+$('#startBtn').onclick=()=> running?stopTimer():startTimer();
+$('#resetBtn').onclick=()=>{ const g=G(); if(g.time && !confirm(`Remettre le chrono de ${g.name} à zéro ?`)) return; running=false; clearInterval(iv); g.time=0; touch(g); renderTimer(); renderSwitch(); refreshCrit('temps'); };
+
+/* ---------- results ---------- */
+function allEvaluators(){
+  const list=[{eid:S.eid, name:myName()+' (vous)', me:true}];
+  Object.entries(S.others).forEach(([eid,o])=>{ if(Object.values(o.groups||{}).some(g=>totals(g).done>0)) list.push({eid, name:o.name||'?'}); });
+  return list;
+}
+function gOf(eid, gid){ return eid===S.eid ? S.groups.find(x=>x.id===gid) : S.others[eid]?.groups?.[gid]; }
+function renderResults(){
+  const rows=S.groups.map(g=>({g, a:avgFor(g.id)})).sort((x,y)=>(y.a?.total??-1)-(x.a?.total??-1));
+  const evs=allEvaluators();
+  $('#resSub').textContent=`${S.session} · ${evs.length} évaluateur(s)${ROOM?' · salle partagée':' · mode local'}`;
+  $('#bars').innerHTML=rows.map(({g,a},i)=>`<div class="barrow"><div><span class="rank ${i===0&&a?'r1':''}">${i+1}</span> <b>${esc(g.name)}</b></div>
+    <div class="track"><i style="width:${(a?.fond||0)/20*100}%;background:var(--fond)"></i><i style="width:${(a?.oral||0)/20*100}%;background:var(--oral)"></i></div>
+    <div class="mono" style="text-align:right"><b>${a?num(a.total):'—'}</b>/20</div></div>`).join('');
+  $('#evTable').innerHTML=`<tr><th>Groupe</th>${evs.map(e=>`<th>${esc(e.name)}</th>`).join('')}<th>Moyenne</th><th>Écart</th><th>Temps</th></tr>`+
+    S.groups.map(g=>{ const a=avgFor(g.id); const times=evalsFor(g.id).map(e=>e.g.time||0).filter(Boolean);
+      return `<tr><td><b>${esc(g.name)}</b></td>${evs.map(e=>{const x=gOf(e.eid,g.id); const t=x&&totals(x); return `<td class="mono">${t&&t.done?num(t.total)+(t.done<t.n?'<span class="sub">*</span>':''):'–'}</td>`}).join('')}
+      <td class="mono"><b>${a?num(a.total):'–'}</b></td><td class="mono" style="color:${a&&a.spread>=3?'var(--bad)':'inherit'}">${a&&a.n>1?num(a.spread):''}</td><td class="mono">${times.length?fmt(Math.max(...times)):'–'}</td></tr>`; }).join('')+
+    `<tr><td colspan="${evs.length+4}" class="sub" style="text-align:left">* notation incomplète</td></tr>`;
+  $('#resTable').innerHTML=`<tr><th>Groupe</th>${CRITERIA.map(c=>`<th title="${esc(c.title)}">${esc(c.title.replace(/^\d\.\s*/,'').split(/[&(]/)[0].trim())}<br><span style="font-weight:500">/${num(c.weight)}</span></th>`).join('')}<th>Total</th></tr>`+
+    rows.map(({g,a})=>`<tr><td><b>${esc(g.name)}</b></td>${CRITERIA.map(c=>`<td class="mono">${a&&a.crit[c.id]!=null?num(a.crit[c.id]):'<span style="color:var(--muted)">–</span>'}</td>`).join('')}<td class="mono"><b>${a?num(a.total):'–'}</b></td></tr>`).join('');
+  $('#allComments').innerHTML=S.groups.map(g=>{ const ev=evalsFor(g.id).filter(e=>e.g.comments&&(e.g.comments.plus||e.g.comments.moins||e.g.comments.notes));
+    return `<details class="gdet"><summary>${esc(g.name)} <span class="sub">(${ev.length} commentaire${ev.length>1?'s':''})</span></summary>${ev.map(e=>`<div class="cm"><b>${esc(e.name)}</b>
+      ${e.g.comments.plus?`➕ ${esc(e.g.comments.plus).replace(/\n/g,'<br>')}<br>`:''}${e.g.comments.moins?`➖ ${esc(e.g.comments.moins).replace(/\n/g,'<br>')}<br>`:''}${e.g.comments.notes?`📝 ${esc(e.g.comments.notes).replace(/\n/g,'<br>')}`:''}</div>`).join('')||'<div class="sub">Aucun commentaire.</div>'}</details>`; }).join('');
+}
+function download(name, content, type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([content],{type})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
+const dec = n => n==null?'':String(Math.round(n*100)/100).replace('.',',');
+$('#exportCsv').onclick=()=>{
+  const q=v=>`"${String(v??'').replace(/"/g,'""')}"`; const evs=allEvaluators();
+  const head=['Groupe','Membres',...CRITERIA.map(c=>`${c.title} (/${c.weight}) moy.`),`Livrables /${MAX_FOND} moy.`,`Oral /${MAX_ORAL} moy.`,'Total /20 moy.',...evs.map(e=>`Note ${e.name}`),'Temps','Commentaires'];
+  const lines=[head.map(q).join(';'), ...S.groups.map(g=>{ const a=avgFor(g.id); const ev=evalsFor(g.id); const times=ev.map(e=>e.g.time||0).filter(Boolean);
+    return [g.name, members(g).join(', '), ...CRITERIA.map(c=>dec(a?.crit[c.id])), dec(a?.fond), dec(a?.oral), dec(a?.total),
+      ...evs.map(e=>{const x=gOf(e.eid,g.id); const t=x&&totals(x); return t&&t.done?dec(t.total):'';}), times.length?fmt(Math.max(...times)):'',
+      ev.map(e=>{const c=e.g.comments||{}; const s=[c.plus&&'+ '+c.plus, c.moins&&'- '+c.moins, c.notes].filter(Boolean).join(' / '); return s?`${e.name}: ${s}`:''}).filter(Boolean).join(' | ')].map(q).join(';'); })];
+  download(`notes-${(S.session||'oral').replace(/[^\w]+/g,'-')}.csv`, '﻿'+lines.join('\n'), 'text/csv;charset=utf-8'); toast('CSV exporté');
+};
+$('#printBtn').onclick=()=>{
+  $('#print').innerHTML=S.groups.map(g=>{ const a=avgFor(g.id); const ev=evalsFor(g.id); const times=ev.map(e=>e.g.time||0).filter(Boolean);
+    return `<div class="sheet">
+    <h1>${esc(g.name)} — ${a?num(a.total):'—'}/20</h1>
+    <div>${esc(S.session)} · ${new Date().toLocaleDateString('fr-FR')} · ${a?a.n:0} évaluateur(s)</div>
+    <div>Membres : ${esc(members(g).join(', ')||'—')} · Durée : ${times.length?fmt(Math.max(...times)):'—'}</div>
+    <table style="margin-top:10px"><tr><th>Critère</th><th>Points (moyenne)</th></tr>
+    ${CRITERIA.map(c=>`<tr><td><b>${c.title}</b><br>${c.desc}</td><td>${a&&a.crit[c.id]!=null?num(a.crit[c.id]):'—'} / ${num(c.weight)}</td></tr>`).join('')}
+    <tr><td><b>Livrables</b></td><td>${a?num(a.fond):'—'} / ${MAX_FOND}</td></tr>
+    <tr><td><b>Oral</b></td><td>${a?num(a.oral):'—'} / ${MAX_ORAL}</td></tr>
+    <tr><td><b>TOTAL</b></td><td><b>${a?num(a.total):'—'} / 20</b></td></tr></table>
+    ${ev.filter(e=>e.g.comments&&(e.g.comments.plus||e.g.comments.moins)).map(e=>`<p><b>${esc(e.name.replace(' (vous)',''))}</b><br>${e.g.comments.plus?'Points forts : '+esc(e.g.comments.plus).replace(/\n/g,'<br>')+'<br>':''}${e.g.comments.moins?'Axes d\'amélioration : '+esc(e.g.comments.moins).replace(/\n/g,'<br>'):''}</p>`).join('')}
+  </div>`}).join('');
+  window.print();
+};
+
+/* ---------- grid reference ---------- */
+$('#gridRef').innerHTML = ['fond','oral'].map(cat=>`<div class="sect" style="margin-top:8px"><span class="tag" style="background:var(--${cat})"></span><h3>${cat==='fond'?'Livrables attendus':'Oral & présentation'}</h3><span class="sub">/${cat==='fond'?MAX_FOND:MAX_ORAL} pts</span></div>`+
+  CRITERIA.filter(c=>c.cat===cat).map(c=>`<div class="card crit"><div class="crit-h"><div class="t"><h3>${c.title}</h3><div class="sub">${c.desc}</div></div><div class="pts mono">${num(c.weight)} pts</div></div>
+   <div class="levels">${LEVELS.map(L=>`<div class="lvl"><b>${L.name} · ${num(c.weight*L.f)}</b>${c.lv[L.l]}</div>`).join('')}</div>
+   <ul style="margin:10px 0 0;padding-left:18px;font-size:13.5px;color:var(--muted)">${c.checks.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')).join('');
+
+/* ---------- live sharing (ntfy.sh relay, room = secret link) ---------- */
+const syncBtn=$('#syncBtn');
+function setSync(state, txt){ syncBtn.className='sync '+(state||''); syncBtn.textContent=txt; }
+syncBtn.onclick=()=>show('setup');
+const pendingEv=new Set(); let pendingCfg=false, flushT=null, failed=false;
+function queueEv(gid){ if(!ROOM) return; pendingEv.add(gid); scheduleFlush(); }
+function queueCfg(){ if(!ROOM) return; pendingCfg=true; scheduleFlush(); }
+function scheduleFlush(ms=4000){ clearTimeout(flushT); flushT=setTimeout(flush, ms); }
+const bytes = s => new TextEncoder().encode(s).length;
+function evMsg(g){
+  const m={v:2,t:'ev',ts:g.ts||Date.now(),eid:S.eid,en:myName(),gid:g.id,s:g.scores,adj:g.adjust||0,sec:Math.round(g.time||0),c:{...g.comments}};
+  let str=JSON.stringify(m);
+  while(bytes(str)>3800){ const k=['plus','moins','notes'].sort((a,b)=>m.c[b].length-m.c[a].length)[0]; m.c[k]=m.c[k].slice(0,Math.floor(m.c[k].length*0.8)); str=JSON.stringify(m); }
+  return str;
+}
+function cfgMsg(){
+  const m={v:2,t:'cfg',ts:S.cfgTs||Date.now(),by:S.eid,session:S.session,dur:S.dur,order:S.order,groups:S.groups.map(g=>({id:g.id,name:g.name.slice(0,80),members:g.members.map(x=>x.slice(0,60))}))};
+  return JSON.stringify(m);
+}
+async function post(body){
+  const r=await fetch('https://ntfy.sh/'+TOPIC,{method:'POST',body,keepalive:bytes(body)<60000});
+  if(!r.ok) throw new Error(r.status);
+}
+async function flush(){
+  if(!ROOM) return;
+  const jobs=[]; if(pendingCfg){ jobs.push(['cfg',null]); }
+  pendingEv.forEach(id=>jobs.push(['ev',id]));
+  pendingCfg=false; pendingEv.clear();
+  for(const [t,id] of jobs){
+    try{ if(t==='cfg') await post(cfgMsg()); else { const g=S.groups.find(x=>x.id===id); if(g) await post(evMsg(g)); }
+      if(failed){ failed=false; updateSyncLabel(); } }
+    catch(e){ if(t==='cfg') pendingCfg=true; else pendingEv.add(id); failed=true; setSync('err','⚠ Envoi en attente'); scheduleFlush(10000); return; }
+  }
+}
+addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden' && (pendingCfg||pendingEv.size)){ clearTimeout(flushT); flush(); } });
+addEventListener('pagehide',()=>{ if(pendingCfg||pendingEv.size) flush(); });
+
+let gotCfg=false, connected=false, rerenderT=null;
+function updateSyncLabel(){
+  if(!ROOM) return setSync('','Local');
+  if(failed) return setSync('err','⚠ Envoi en attente');
+  const n=1+Object.keys(S.others).length;
+  setSync(connected?'on':'err', connected?`● Partagé · ${n} évaluateur${n>1?'s':''}`:'○ Reconnexion…');
+}
+let fullRender=false;
+function rerender(full){ if(full) fullRender=true; clearTimeout(rerenderT); rerenderT=setTimeout(()=>{ const full=fullRender; fullRender=false;
+  updateSyncLabel();
+  const ae=document.activeElement; const typing = ae && ['INPUT','TEXTAREA'].includes(ae.tagName);
+  if(view==='results') renderResults();
+  else if(view==='eval'){ if(typing || !full) { renderColleagues(); renderSwitch(); } else renderEval(); }
+  else if(view==='setup' && !typing) renderSetup();
+},300); }
+function applyCfg(m){
+  if(!Array.isArray(m.groups)) return;
+  const byId=Object.fromEntries(S.groups.map(g=>[g.id,g]));
+  const cur=S.groups[S.current]?.id;
+  const hadScores = S.groups.some(g=>totals(g).done>0 || g.time);
+  const matching = m.groups.some(x=>byId[x.id]);
+  S.groups = m.groups.map((x,i)=>{
+    let g = byId[x.id] || (!matching && hadScores ? S.groups[i] : null) || newGroup(i);
+    g = Object.assign({}, g, {id:x.id, name:String(x.name||''), members:Array.isArray(x.members)&&x.members.length?x.members.map(String):['']});
+    return g;
+  });
+  if(!matching && hadScores) S.groups.forEach(g=>{ if(g.ts) queueEv(g.id); });
+  S.session=String(m.session||S.session); S.dur=+m.dur||S.dur; S.order=Array.isArray(m.order)?m.order:null; S.cfgTs=m.ts;
+  const ci=S.groups.findIndex(g=>g.id===cur); S.current = ci>=0?ci:0;
+  $('#sessionLabel').textContent=S.session; save();
+}
+function handle(m){
+  if(!m || m.v!==2) return;
+  if(m.t==='cfg'){ gotCfg=true; if((m.ts||0)>(S.cfgTs||0)) { applyCfg(m); rerender(true); } }
+  else if(m.t==='ev' && m.eid && m.gid){
+    if(m.eid===S.eid) return;
+    const o = S.others[m.eid] ||= {name:'', groups:{}};
+    const prev=o.groups[m.gid];
+    if(prev && prev.ts>m.ts) return;
+    o.name=String(m.en||'?').slice(0,60);
+    o.groups[m.gid]={ts:m.ts, scores:m.s||{}, adjust:+m.adj||0, time:+m.sec||0, comments:{plus:String(m.c?.plus||''),moins:String(m.c?.moins||''),notes:String(m.c?.notes||'')}};
+    save(); rerender();
+  }
+}
+function connect(){
+  if(!ROOM) { updateSyncLabel(); return; }
+  setSync('err','○ Connexion…');
+  let es;
+  try{ es=new EventSource(`https://ntfy.sh/${TOPIC}/sse?since=all`); }catch(e){ setSync('err','⚠ Hors ligne'); return; }
+  es.onopen=()=>{ connected=true; updateSyncLabel();
+    setTimeout(()=>{ if(!gotCfg){ if(!S.cfgTs) S.cfgTs=Date.now(); queueCfg(); scheduleFlush(200); } }, 3000); };
+  es.onmessage=e=>{ try{ const d=JSON.parse(e.data); if(d.event==='message' && d.message) handle(JSON.parse(d.message)); }catch(err){} };
+  es.onerror=()=>{ connected=false; updateSyncLabel(); };
+}
+
+renderSetup(); connect(); updateSyncLabel();
+})();
+</script>
+</body>
+</html>
